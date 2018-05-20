@@ -26,15 +26,12 @@ public class RoleInterceptor implements HandlerInterceptor {
 
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        // 1 有没有登录
-        // 2 你对应的角色有没有这个权限
 
         HandlerMethod methodHandler = (HandlerMethod) handler;
         java.lang.reflect.Method method = methodHandler.getMethod();
         Role role = method.getAnnotation(Role.class);
         if ( role != null ) {
-            //System.out.println(role.role() + "xxxxxxxxxxxxxxxxxxxxx");
-            int roleCode = role.role(); // 权限码
+            int roleCode = role.role();
             if ( roleCode == 3 ) {
                 if ( request.getSession().getAttribute("admin") != null ) {
                     return true;
@@ -54,13 +51,9 @@ public class RoleInterceptor implements HandlerInterceptor {
                 }
             }
             if ( roleCode == 2 ) {
-                /*System.out.println("(roleCode & Role.ROLE_TEACHER)"
-                        + (roleCode & Role.ROLE_TEACHER));*/
                 if ( request.getSession().getAttribute("user_teacher") != null ) {
-                    //System.out.println("teacherXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                     return true;
                 } else {
-                    //System.out.println(roleCode & Role.ROLE_TEACHER);
                     send(response, 405);
                     request.getSession().invalidate();
                     return false;
@@ -77,7 +70,6 @@ public class RoleInterceptor implements HandlerInterceptor {
                 }
             }
         }
-        //System.out.println("没有拦截xxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         return true;
     }
 
